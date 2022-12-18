@@ -31,12 +31,22 @@ export class DashboardComponent implements OnInit {
 
   getLatestMovie() {
     this.dataService.getLatestMovie().subscribe((res) => {
-      this.latestMovies = res;
+      this.latestMovies = this.changeData(res);
       console.log(res);
-      
+
     }, err => {
       console.log('Not able to get latest movies', err);
     })
+  }
+
+  changeData(res: any): any {
+    if (!res.backdrop_path) {
+      res.backdrop_path = 'https://image.tmdb.org/t/p/original' + res.poster_path + '?api_key=' + environment.api_key;
+    } else {
+      res.backdrop_path = 'https://image.tmdb.org/t/p/original' + res.backdrop_path + '?api_key=' + environment.api_key;
+    }
+
+    return res;
   }
 
   getPopularMovies() {
@@ -90,7 +100,7 @@ export class DashboardComponent implements OnInit {
   modifyData(movies: Movie): Movie {
     if (movies.results) {
       movies.results.forEach(element => {
-        element.backdrop_path = 'https://image.tmdb.org/t/p/original' + element.backdrop_path + 'api_key?' + environment.api_key;
+        element.backdrop_path = 'https://image.tmdb.org/t/p/original' + element.backdrop_path + '?api_key=' + environment.api_key;
         if (!element.title) {
           element.title = element.name;
         }
